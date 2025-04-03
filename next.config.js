@@ -1,11 +1,33 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  reactStrictMode: true,
   images: {
-    unoptimized: true
+    domains: ['localhost'],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '80',
+        pathname: '/wp-content/uploads/**',
+      },
+    ],
   },
-  basePath: '/wp-content/themes/wp-theme/frontend',
-  assetPrefix: '/wp-content/themes/wp-theme/frontend/'
-}
+  async rewrites() {
+    return [
+      {
+        source: '/wp-json/:path*',
+        destination: 'http://localhost/wp-json/:path*',
+      },
+    ];
+  },
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
+  devIndicators: {
+    buildActivity: false,
+    buildActivityPosition: 'bottom-right',
+  },
+};
 
-module.exports = nextConfig 
+module.exports = nextConfig; 
